@@ -21,37 +21,40 @@ module.exports = {
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env', '@babel/preset-react',],
-            plugins: ['@babel/plugin-proposal-class-properties', '@babel/plugin-transform-runtime']
+            presets: ['@babel/preset-env', '@babel/preset-react'],
+            plugins: [
+              '@babel/plugin-proposal-class-properties',
+              '@babel/plugin-transform-runtime',
+            ],
           },
         },
       },
       {
         test: /\.(css|scss)$/,
-        use: ["style-loader", "css-loader", "sass-loader"]
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
         test: /\.html$/,
-        use: ["html-loader"]
+        use: ['html-loader'],
       },
       {
         test: /\.(svg|gif|jpg|jpeg|png)$/,
         use: {
           loader: 'url-loader',
-          options: { 
-            name: "[name].[hash].[ext]",
-            outputPath: "imgs"
-          }
+          options: {
+            name: '[name].[hash].[ext]',
+            outputPath: 'imgs',
+          },
         },
       },
       {
         test: /\.(mp4|mov|m4p|avi|webm|ogg|mpg|mp2)$/,
         use: {
           loader: 'url-loader',
-          options: { 
-            name: "[name].[hash].[ext]",
-            outputPath: "videos"
-          }
+          options: {
+            name: '[name].[hash].[ext]',
+            outputPath: 'videos',
+          },
         },
       },
     ],
@@ -60,8 +63,10 @@ module.exports = {
     modules: ['client', 'node_modules'],
     extensions: ['*', '.js', '.jsx', '.css', '.scss', '.mp4'],
   },
-  plugins: [ new webpack.HotModuleReplacementPlugin()],
+  plugins: [new webpack.HotModuleReplacementPlugin()],
   devServer: {
+    host: '0.0.0.0',
+    port: 8080,
     historyApiFallback: true,
     contentBase: path.resolve(__dirname, './dist'),
     hot: true,
