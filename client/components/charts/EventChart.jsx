@@ -1,28 +1,25 @@
 import React, { Component } from 'react';
+import { GiAirplaneArrival } from 'react-icons/gi';
 import { io } from 'socket.io-client';
 import interval from './chartConfig';
-// const io = require('socket.io-client');
+import './Charts.scss';
 
 class EventChart extends Component {
   constructor(props) {
     super(props);
   }
+
   componentDidMount() {
+    // producing chart.js resources
     let events = 0;
     const socket = io('http://localhost:3030');
     socket.on('log', (data) => {
       data = JSON.parse(data);
-      // console.log('data recieved was', data);
       events = data.length;
     });
-
     const ctx = document.getElementById('myChart2').getContext('2d');
     const liveChart = new Chart(ctx, {
-      // The type of chart we want to create
       type: 'bar',
-      // type: 'line',
-
-      // The data for our dataset
       data: {
         labels: Array(100)
           .fill(0)
@@ -31,9 +28,7 @@ class EventChart extends Component {
           {
             lineTension: 0,
             label: 'live chart',
-            // backgroundColor: 'rgba(115, 115, 217, 1)',
             backgroundColor: '#09dfdf',
-            // borderColor: 'rgb(255, 99, 132)',
             borderColor: '#09dfdf',
             data: Array(100)
               .fill(0)
@@ -41,8 +36,12 @@ class EventChart extends Component {
           },
         ],
       },
-      // Configuration options go here
       options: {
+        elements: {
+          point: {
+            radius: 0,
+          }
+        },
         animation: {
           tension: {
             duration: 100,
@@ -57,9 +56,10 @@ class EventChart extends Component {
         },
         title: {
           display: true,
-          text: 'Events (logs/second)',
-          fontColor: 'white',
-          fontSize: '18'
+          text: 'Events/second',
+          fontColor: '#09dfdf',
+          fontSize: '18',
+          fontFamily: 'Lato',
         },
         scales: {
           yAxes: [
@@ -67,84 +67,69 @@ class EventChart extends Component {
               display: true,
               ticks: {
                 min: 0,
-                // callback: function(value, index, values) {
-                //   return value + ' events';
-                // }
-                fontColor: 'white'
+                fontColor: '#09dfdf',
               },
             },
           ],
           xAxes: [
             {
               ticks: {
-                fontColor: 'white'
-              }
-            }
-          ]
+                fontColor: '#09dfdf',
+              },
+            },
+          ],
         },
       },
     });
-
+    // adding one point of data
     function addData(chart, label, data) {
       chart.data.labels.push(label);
       chart.data.datasets.forEach((dataset) => {
         dataset.data.push(data);
       });
       chart.update();
-      return;
     }
-    //============================================
-
-    //============================================
-
-    //============================================
+    // removing one point of data
     function removeData(chart) {
       chart.data.labels.shift();
       chart.data.datasets.forEach((dataset) => {
         dataset.data.shift();
       });
       chart.update();
-      return;
     }
-
+    // packaging the two functions synchronously in one function
     function chartAnimate(chart, label, data) {
       addData(chart, label, data);
-      //======================
       removeData(chart);
-      //----------------------
-      return;
     }
-
+    // recursion function that calls the packaged "chartAnimate" every "interval"
+    // the "interval" is meant to be able to be manipulated easily and has a global scope.
     function randomizeCallout() {
-      // setTimeout(()=>{
-      //   randomizeCallout()
-      // },interval)
       let time = '';
-      let d = new Date();
-      time += d.getHours() + ' : ';
-      time += d.getMinutes() + ' : ';
+      const d = new Date();
+      time += `${d.getHours()} : `;
+      time += `${d.getMinutes()} : `;
       time += d.getSeconds();
       +' : ';
       time += d.getMilliseconds();
-      let val = events;
-      console.log('events: ', val);
+      const val = events;
       events = 0;
       return chartAnimate(liveChart, time, val);
     }
-    // randomizeCallout()
     setInterval(() => {
       randomizeCallout();
     }, interval);
   }
+
+  // rendering the chaat in div
   render() {
     return (
       <div className={this.props.className}>
-        <div className="moch-chart2">
-          <canvas id="myChart2"></canvas>
+        <div className="chart">
+          <canvas id="myChart2" />
         </div>
       </div>
     );
   }
 }
-
 export default EventChart;

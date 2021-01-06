@@ -1,10 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-// const CleanWebpackPlugin = require('clean-webpack-plugin');
-// const combineLoaders = require('webpack-combine-loaders');
-// const ExtractTextPlugin = require('extract-text-webpack-plugin');
-// const HtmlWebpackPlugin = require('html-webpack-plugin');
-// const HotModuleReplacementPlugin = require('hot-module-replacement');
 
 module.exports = {
   entry: './client/index.js',
